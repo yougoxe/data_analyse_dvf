@@ -26,7 +26,7 @@ cd data_analyse_dvf
 
 4. Make it executable
 ```bash
-chmod +x data_download_linux.sh
+chmod +x setup.sh
 ```
 
 5. Run the setup script
