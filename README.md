@@ -17,7 +17,7 @@ This script allows you to download data files from the provided links and perfor
 2. Clone the repository:
 
 ```bash
-   git clone https://github.com/yougoxe/data_anaylse_dvf.git
+git clone https://github.com/yougoxe/data_anaylse_dvf.git
 ```
 3. Navigate into the project
 ```bash
