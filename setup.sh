@@ -25,6 +25,9 @@ read -rp "Enter the desired versions (comma-separated): " selectedVersionsInput
 # Split the input into individual versions
 IFS=',' read -ra selectedVersions <<< "$selectedVersionsInput"
 
+# Create data folder
+mkdir -p ./data
+
 # Iterate over each selected version
 for selectedVersion in "${selectedVersions[@]}"; do
     # Validate the selected version
