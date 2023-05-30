@@ -11,7 +11,8 @@ This script allows you to download data files from the provided links and perfor
 
 ## Setup and Usage
 
-### Linux
+<details>
+<summary>Linux</summary>
 
 1. Open a terminal.
 2. Clone the repository:
@@ -36,7 +37,11 @@ chmod +x setup.sh
 
 6. Follow the prompts to select the desired versions and proceed with the downloads.
 
-### Windows
+</details>
+
+
+<details>
+<summary>Windows</summary>
 
 1. Open a Powershell session.
 2. Clone the repository:
@@ -56,6 +61,9 @@ cd data_analyse_dvf
 
 5. Follow the prompts to select the desired versions and proceed with the downloads.
 
+
+
+</details>
 
 ## Contributing
 
