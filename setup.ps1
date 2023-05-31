@@ -50,6 +50,7 @@ foreach ($version in $versions.Keys) {
         Write-Host " - $version" -ForegroundColor Green
     }
 }
+Write-Host ""
 
 $selectedVersionsInput = Read-Host "Enter the desired versions (comma-separated)"
 
