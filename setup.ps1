@@ -1,5 +1,24 @@
+#
+# https://github.com/yougoxe/data_analyse_dvf
+#
+
+Write-Host @"
+  _______      ________                     _                
+ |  __ \ \    / /  ____|                   | |               
+ | |  | \ \  / /| |__      __ _ _ __   __ _| |_   _ ___  ___ 
+ | |  | |\ \/ / |  __|    / _` | '_ \ / _` | | | | / __|/ _ \
+ | |__| | \  /  | |      | (_| | | | | (_| | | |_| \__ \  __/
+ |_____/   \/   |_|       \__,_|_| |_|\__,_|_|\__, |___/\___|
+                                               __/ |         
+                                              |___/          
+"@
+
 # Associative array mapping versions to download links and their corresponding SHA-1 hashes
 $versions = @{
+    "departements-regions" = @{
+        "url" = "https://www.data.gouv.fr/fr/datasets/r/987227fb-dcb2-429e-96af-8979f97c9c84"
+        "sha1" = "464b65bce7c3a620d628b55cb5518bac2b8d4a0e"
+    }
     "dvf2022" = @{
         "url" = "https://www.data.gouv.fr/fr/datasets/r/87038926-fb31-4959-b2ae-7a24321c599a"
         "sha1" = "cb748fbd4e51b336e546a122f4b7c3f48bef0205"
@@ -22,22 +41,32 @@ $versions = @{
     }
 }
 
+$autoDownloadFiles = @("departements-regions")
+
 # Prompt user to choose versions
 Write-Host "Available versions:"
-$versions.Keys | ForEach-Object {
-    Write-Host " - $_"
+foreach ($version in $versions.Keys) {
+    if ($autoDownloadFiles -notcontains $version) {
+        Write-Host " - $version" -ForegroundColor Green
+    }
 }
 
-$selectedVersionsInput = Read-Host "Enter the desired versions (comma-separated):"
+$selectedVersionsInput = Read-Host "Enter the desired versions (comma-separated)"
 
 # Split the input into individual versions
 $selectedVersions = $selectedVersionsInput -split ','
+
+$selectedVersions += $autoDownloadFiles
+
+$destinationFolder = "data"
+New-Item -ItemType Directory -Force -Path $destinationFolder | Out-Null
 
 # Iterate over each selected version
 foreach ($selectedVersion in $selectedVersions) {
     # Validate the selected version
     if (-not $versions.ContainsKey($selectedVersion)) {
         Write-Host "Invalid version selected: $selectedVersion" -ForegroundColor Red
+        Write-Host ""
         continue
     }
 
@@ -46,8 +75,17 @@ foreach ($selectedVersion in $selectedVersions) {
     $downloadUrl = $versionInfo["url"]
     $sha1Hash = $versionInfo["sha1"]
     $fileName = "$selectedVersion.csv"
-    $destinationFolder = "data"
     $destinationPath = Join-Path $destinationFolder $fileName
+
+    if (Test-Path -Path $destinationPath) {
+        Write-Host "File $destinationPath already exists. Do you want to overwrite it? (y/n): " -NoNewline -ForegroundColor Yellow
+        $overwrite = Read-Host
+        if ($overwrite -ne "y") {
+            Write-Host "Skipping download of $selectedVersion." -ForegroundColor Yellow
+            Write-Host ""
+            continue
+        }
+    }
 
     Write-Host "Downloading $selectedVersion..."
 
@@ -64,9 +102,11 @@ if ($computedHash -ne $sha1Hash) {
     Rename-Item -Path $destinationPath -NewName $dangerousFileName -Force
 
     # Display an error message in red
-    Write-Host "SHA-1 verification failed for $selectedVersion. The downloaded file is potentially dangerous." -ForegroundColor Red
+    Write-Host "⬤ SHA-1 verification failed for $selectedVersion. The downloaded file is potentially dangerous." -ForegroundColor Red
+    Write-Host ""
 }
 else {
-    Write-Host "Download of $selectedVersion complete!"	
+    Write-Host "⬤ Download of $selectedVersion complete!" -ForegroundColor Green
+    Write-Host ""
 	}
 }
